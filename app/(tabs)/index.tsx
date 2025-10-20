@@ -1,14 +1,13 @@
-import { View } from 'react-native'
-
-import { useAuthContext } from '@/hooks/use-auth'
-import { Text } from '@/components/ui/text'
+import { View } from "react-native";
+import { Text } from "@/components/ui/text";
+import { useAuthContext } from "@/hooks/use-auth";
 
 export default function HomeScreen() {
-  const { profile } = useAuthContext()
+	const { session } = useAuthContext();
 
-  return (
-    <View>
-      <Text>Welcome, {profile?.name || 'Guest'}!</Text>
-    </View>
-  )
+	return (
+		<View>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+		</View>
+	);
 }
