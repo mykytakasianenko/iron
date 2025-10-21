@@ -51,6 +51,7 @@ export default function Screen() {
 						source={LOGO[colorScheme ?? "light"]}
 						style={IMAGE_STYLE}
 						resizeMode="contain"
+						borderRadius={30}
 					/>
 				</View>
 
