@@ -8,6 +8,100 @@ export default function HomeScreen() {
 	return (
 		<View>
 			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
+			<Text>Welcome, {session?.user.email || "Guest"}!</Text>
 		</View>
 	);
 }

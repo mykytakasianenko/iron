@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
 	Image,
@@ -13,24 +14,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginScreen() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const passwordInputRef = useRef<TextInput>(null);
+	const router = useRouter();
 
 	function onEmailSubmitEditing() {
 		passwordInputRef.current?.focus();
 	}
 
-	function onSubmit() {
-		// TODO: Submit form and navigate to protected screen if successful
-		console.log("Login submitted");
+	async function onSubmit() {
+		await supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
 	}
 
 	function navigateToRegister() {
-		// TODO: Navigate to register screen
-		console.log("Navigate to register");
+		router.replace("/auth/register");
 	}
 
 	function navigateToForgotPassword() {
