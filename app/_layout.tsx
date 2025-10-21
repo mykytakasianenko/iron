@@ -17,14 +17,15 @@ export {
 
 function RootNavigator() {
 	const { isLoggedIn } = useAuthContext();
+
 	return (
 		<Stack>
 			<Stack.Protected guard={isLoggedIn}>
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 			</Stack.Protected>
 			<Stack.Protected guard={!isLoggedIn}>
-				{/* <Stack.Screen name="onboarding/index" options={{ headerShown: true }} /> */}
-				{/* <Stack.Screen name="auth/login" options={{ headerShown: false }} /> */}
+				<Stack.Screen name="onboarding" options={{ headerShown: false }} />
+				<Stack.Screen name="auth/login" options={{ headerShown: false }} />
 				<Stack.Screen name="auth/register" options={{ headerShown: false }} />
 			</Stack.Protected>
 			<Stack.Screen name="+not-found" />

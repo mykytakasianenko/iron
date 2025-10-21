@@ -8,7 +8,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 	const [profile, setProfile] = useState<any>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
-	// Fetch the session once, and subscribe to auth state changes
 	useEffect(() => {
 		const fetchSession = async () => {
 			setIsLoading(true);
@@ -35,7 +34,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 			setSession(session);
 		});
 
-		// Cleanup subscription on unmount
 		return () => {
 			subscription.unsubscribe();
 		};
@@ -70,7 +68,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 				session,
 				isLoading,
 				profile,
-				isLoggedIn: session !== undefined,
+				isLoggedIn: session !== null && session !== undefined,
 			}}
 		>
 			{children}
