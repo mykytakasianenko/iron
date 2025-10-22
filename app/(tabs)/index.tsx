@@ -1,10 +1,18 @@
-import { ScrollView, View, Pressable, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Plus, Edit2, Trash2, Play, Clock, Target, Flame } from "lucide-react-native";
+import {
+	Clock,
+	Edit2,
+	Flame,
+	Play,
+	Plus,
+	Target,
+	Trash2,
+} from "lucide-react-native";
 import { useState } from "react";
-import { Text } from "@/components/ui/text";
+import { Image, Pressable, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { Text } from "@/components/ui/text";
 
 const initialExercises = [
 	{
@@ -16,8 +24,9 @@ const initialExercises = [
 		weight: "80kg",
 		duration: "15 min",
 		calories: 120,
-		image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80",
-		completed: false
+		image:
+			"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80",
+		completed: false,
 	},
 	{
 		id: "2",
@@ -28,8 +37,9 @@ const initialExercises = [
 		weight: "100kg",
 		duration: "20 min",
 		calories: 180,
-		image: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&q=80",
-		completed: true
+		image:
+			"https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&q=80",
+		completed: true,
 	},
 	{
 		id: "3",
@@ -40,8 +50,9 @@ const initialExercises = [
 		weight: "120kg",
 		duration: "18 min",
 		calories: 150,
-		image: "https://images.unsplash.com/photo-1532384816664-01b8b7238c8d?w=400&q=80",
-		completed: false
+		image:
+			"https://images.unsplash.com/photo-1532384816664-01b8b7238c8d?w=400&q=80",
+		completed: false,
 	},
 	{
 		id: "4",
@@ -52,9 +63,10 @@ const initialExercises = [
 		weight: "Body",
 		duration: "10 min",
 		calories: 90,
-		image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80",
-		completed: false
-	}
+		image:
+			"https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80",
+		completed: false,
+	},
 ];
 
 export default function HomeScreen() {
@@ -62,13 +74,15 @@ export default function HomeScreen() {
 	const [editMode, setEditMode] = useState(false);
 
 	const handleToggleComplete = (id: string) => {
-		setExercises(exercises.map(ex =>
-			ex.id === id ? { ...ex, completed: !ex.completed } : ex
-		));
+		setExercises(
+			exercises.map((ex) =>
+				ex.id === id ? { ...ex, completed: !ex.completed } : ex,
+			),
+		);
 	};
 
 	const handleDelete = (id: string) => {
-		setExercises(exercises.filter(ex => ex.id !== id));
+		setExercises(exercises.filter((ex) => ex.id !== id));
 	};
 
 	const handleAddExercise = () => {
@@ -79,10 +93,10 @@ export default function HomeScreen() {
 		console.log("Navigate to edit exercise:", id);
 	};
 
-	const completedCount = exercises.filter(ex => ex.completed).length;
+	const completedCount = exercises.filter((ex) => ex.completed).length;
 	const totalCalories = exercises.reduce((sum, ex) => sum + ex.calories, 0);
 	const totalDuration = exercises.reduce((sum, ex) => {
-		const mins = parseInt(ex.duration);
+		const mins = parseInt(ex.duration, 10);
 		return sum + mins;
 	}, 0);
 
@@ -97,10 +111,10 @@ export default function HomeScreen() {
 								Today's Workout
 							</Text>
 							<Text className="text-muted-foreground text-base">
-								{new Date().toLocaleDateString('en-US', {
-									weekday: 'long',
-									month: 'short',
-									day: 'numeric'
+								{new Date().toLocaleDateString("en-US", {
+									weekday: "long",
+									month: "short",
+									day: "numeric",
 								})}
 							</Text>
 						</View>
@@ -122,17 +136,23 @@ export default function HomeScreen() {
 					<View className="flex-row gap-2">
 						<View className="flex-1 bg-card border border-border rounded-xl p-3">
 							<Icon as={Target} size={16} className="text-primary mb-1" />
-							<Text className="text-foreground font-bold text-lg">{completedCount}/{exercises.length}</Text>
+							<Text className="text-foreground font-bold text-lg">
+								{completedCount}/{exercises.length}
+							</Text>
 							<Text className="text-muted-foreground text-xs">Completed</Text>
 						</View>
 						<View className="flex-1 bg-card border border-border rounded-xl p-3">
 							<Icon as={Clock} size={16} className="text-blue-500 mb-1" />
-							<Text className="text-foreground font-bold text-lg">{totalDuration}m</Text>
+							<Text className="text-foreground font-bold text-lg">
+								{totalDuration}m
+							</Text>
 							<Text className="text-muted-foreground text-xs">Duration</Text>
 						</View>
 						<View className="flex-1 bg-card border border-border rounded-xl p-3">
 							<Icon as={Flame} size={16} className="text-orange-500 mb-1" />
-							<Text className="text-foreground font-bold text-lg">{totalCalories}</Text>
+							<Text className="text-foreground font-bold text-lg">
+								{totalCalories}
+							</Text>
 							<Text className="text-muted-foreground text-xs">Calories</Text>
 						</View>
 					</View>
@@ -159,10 +179,11 @@ export default function HomeScreen() {
 							<View key={exercise.id} className="relative">
 								<Pressable
 									onPress={() => !editMode && handleToggleComplete(exercise.id)}
-									className={`bg-card border rounded-2xl overflow-hidden ${exercise.completed
+									className={`bg-card border rounded-2xl overflow-hidden ${
+										exercise.completed
 											? "border-primary opacity-75"
 											: "border-border"
-										}`}
+									}`}
 								>
 									<View className="flex-row">
 										{/* Image */}
@@ -188,7 +209,11 @@ export default function HomeScreen() {
 													</Text>
 													{!editMode && !exercise.completed && (
 														<Pressable className="bg-primary/10 rounded-full p-1.5">
-															<Icon as={Play} size={14} className="text-primary" />
+															<Icon
+																as={Play}
+																size={14}
+																className="text-primary"
+															/>
 														</Pressable>
 													)}
 												</View>

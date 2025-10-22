@@ -1,10 +1,9 @@
-import { ScrollView, View, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { TrendingUp, Flame, Trophy, Calendar, Target, Zap } from "lucide-react-native";
+import { Calendar, Flame, Target, Trophy, Zap } from "lucide-react-native";
 import { useState } from "react";
-import { LineChart, BarChart } from "recharts";
-import { Text } from "@/components/ui/text";
+import { Pressable, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "@/components/ui/icon";
+import { Text } from "@/components/ui/text";
 
 const workoutData = [
 	{ day: "Mon", workouts: 1, calories: 350 },
@@ -13,7 +12,7 @@ const workoutData = [
 	{ day: "Thu", workouts: 1, calories: 380 },
 	{ day: "Fri", workouts: 1, calories: 420 },
 	{ day: "Sat", workouts: 2, calories: 650 },
-	{ day: "Sun", workouts: 1, calories: 400 }
+	{ day: "Sun", workouts: 1, calories: 400 },
 ];
 
 const monthlyProgress = [
@@ -22,7 +21,7 @@ const monthlyProgress = [
 	{ month: "Mar", count: 18 },
 	{ month: "Apr", count: 14 },
 	{ month: "May", count: 20 },
-	{ month: "Jun", count: 22 }
+	{ month: "Jun", count: 22 },
 ];
 
 const timeFrames = ["Week", "Month", "Year"];
@@ -33,29 +32,29 @@ const insights = [
 		title: "Hot Streak!",
 		description: "12 days in a row",
 		color: "text-orange-500",
-		bg: "bg-orange-500/10"
+		bg: "bg-orange-500/10",
 	},
 	{
 		icon: Trophy,
 		title: "Personal Best",
 		description: "6 workouts this week",
 		color: "text-yellow-500",
-		bg: "bg-yellow-500/10"
+		bg: "bg-yellow-500/10",
 	},
 	{
 		icon: Target,
 		title: "Goal Progress",
 		description: "73% to monthly target",
 		color: "text-blue-500",
-		bg: "bg-blue-500/10"
+		bg: "bg-blue-500/10",
 	},
 	{
 		icon: Zap,
 		title: "Most Active",
 		description: "Saturday mornings",
 		color: "text-purple-500",
-		bg: "bg-purple-500/10"
-	}
+		bg: "bg-purple-500/10",
+	},
 ];
 
 export default function StatisticsScreen() {
@@ -63,7 +62,7 @@ export default function StatisticsScreen() {
 
 	const totalWorkouts = workoutData.reduce((sum, day) => sum + day.workouts, 0);
 	const totalCalories = workoutData.reduce((sum, day) => sum + day.calories, 0);
-	const avgPerDay = Math.round(totalCalories / 7);
+	const _avgPerDay = Math.round(totalCalories / 7);
 
 	return (
 		<SafeAreaView className="flex-1 bg-background">
@@ -85,14 +84,16 @@ export default function StatisticsScreen() {
 							<Pressable
 								key={frame}
 								onPress={() => setSelectedTimeFrame(frame)}
-								className={`flex-1 py-2 rounded-lg ${selectedTimeFrame === frame ? "bg-primary" : ""
-									}`}
+								className={`flex-1 py-2 rounded-lg ${
+									selectedTimeFrame === frame ? "bg-primary" : ""
+								}`}
 							>
 								<Text
-									className={`text-center font-semibold ${selectedTimeFrame === frame
+									className={`text-center font-semibold ${
+										selectedTimeFrame === frame
 											? "text-primary-foreground"
 											: "text-muted-foreground"
-										}`}
+									}`}
 								>
 									{frame}
 								</Text>
@@ -109,8 +110,12 @@ export default function StatisticsScreen() {
 								<Icon as={Calendar} size={18} className="text-primary mr-2" />
 								<Text className="text-muted-foreground text-sm">Workouts</Text>
 							</View>
-							<Text className="text-3xl font-bold text-foreground">{totalWorkouts}</Text>
-							<Text className="text-green-500 text-xs mt-1">↑ 23% vs last week</Text>
+							<Text className="text-3xl font-bold text-foreground">
+								{totalWorkouts}
+							</Text>
+							<Text className="text-green-500 text-xs mt-1">
+								↑ 23% vs last week
+							</Text>
 						</View>
 
 						<View className="flex-1 bg-card border border-border rounded-xl p-4">
@@ -118,8 +123,12 @@ export default function StatisticsScreen() {
 								<Icon as={Flame} size={18} className="text-orange-500 mr-2" />
 								<Text className="text-muted-foreground text-sm">Calories</Text>
 							</View>
-							<Text className="text-3xl font-bold text-foreground">{totalCalories}</Text>
-							<Text className="text-green-500 text-xs mt-1">↑ 15% vs last week</Text>
+							<Text className="text-3xl font-bold text-foreground">
+								{totalCalories}
+							</Text>
+							<Text className="text-green-500 text-xs mt-1">
+								↑ 15% vs last week
+							</Text>
 						</View>
 					</View>
 				</View>
@@ -138,7 +147,10 @@ export default function StatisticsScreen() {
 										<View className="flex-1 justify-end w-full px-1">
 											<View
 												className="bg-primary rounded-t-lg w-full"
-												style={{ height: `${height}%`, minHeight: day.workouts > 0 ? 20 : 0 }}
+												style={{
+													height: `${height}%`,
+													minHeight: day.workouts > 0 ? 20 : 0,
+												}}
 											/>
 										</View>
 										<Text className="text-muted-foreground text-xs mt-2">
