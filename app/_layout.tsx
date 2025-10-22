@@ -27,6 +27,7 @@ function RootNavigator() {
 				<Stack.Screen name="onboarding" options={{ headerShown: false }} />
 				<Stack.Screen name="auth/login" options={{ headerShown: false }} />
 				<Stack.Screen name="auth/register" options={{ headerShown: false }} />
+				<Stack.Screen name="workout" options={{ headerShown: false }} />
 			</Stack.Protected>
 			<Stack.Screen name="+not-found" />
 		</Stack>

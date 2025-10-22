@@ -1,272 +1,353 @@
 import {
-	Clock,
-	Edit2,
-	Flame,
-	Play,
 	Plus,
-	Target,
-	Trash2,
+	Dumbbell,
+	Calendar,
+	Flame,
+	Image as ImageIcon,
 } from "lucide-react-native";
-import { useState } from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import {
+	Pressable,
+	ScrollView,
+	View,
+	Image,
+	Alert,
+	TextInput,
+	ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-
-const initialExercises = [
-	{
-		id: "1",
-		name: "Bench Press",
-		category: "Chest",
-		sets: 4,
-		reps: 10,
-		weight: "80kg",
-		duration: "15 min",
-		calories: 120,
-		image:
-			"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80",
-		completed: false,
-	},
-	{
-		id: "2",
-		name: "Squats",
-		category: "Legs",
-		sets: 4,
-		reps: 12,
-		weight: "100kg",
-		duration: "20 min",
-		calories: 180,
-		image:
-			"https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&q=80",
-		completed: true,
-	},
-	{
-		id: "3",
-		name: "Deadlift",
-		category: "Back",
-		sets: 3,
-		reps: 8,
-		weight: "120kg",
-		duration: "18 min",
-		calories: 150,
-		image:
-			"https://images.unsplash.com/photo-1532384816664-01b8b7238c8d?w=400&q=80",
-		completed: false,
-	},
-	{
-		id: "4",
-		name: "Pull-ups",
-		category: "Back",
-		sets: 3,
-		reps: 12,
-		weight: "Body",
-		duration: "10 min",
-		calories: 90,
-		image:
-			"https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400&q=80",
-		completed: false,
-	},
-];
+import { supabase } from "@/lib/supabase";
+import { useWorkoutsStore, Workout } from "@/state/workouts";
 
 export default function HomeScreen() {
-	const [exercises, setExercises] = useState(initialExercises);
-	const [editMode, setEditMode] = useState(false);
+	const router = useRouter();
+	const {
+		workouts,
+		fetchWorkouts,
+		createWorkout,
+		updateWorkoutDb,
+		deleteWorkoutDb,
+		uploadWorkoutCover,
+		isLoading,
+	} = useWorkoutsStore();
 
-	const handleToggleComplete = (id: string) => {
-		setExercises(
-			exercises.map((ex) =>
-				ex.id === id ? { ...ex, completed: !ex.completed } : ex,
-			),
+	const [userId, setUserId] = useState<string>("");
+	const [showCreateModal, setShowCreateModal] = useState(false);
+	const [newWorkoutName, setNewWorkoutName] = useState("");
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const [creating, setCreating] = useState(false);
+
+	useEffect(() => {
+		loadWorkouts();
+	}, []);
+
+	const loadWorkouts = async () => {
+		const {
+			data: { user },
+		} = await supabase.auth.getUser();
+		if (user) {
+			setUserId(user.id);
+			await fetchWorkouts(user.id);
+		}
+	};
+
+	const pickImageForWorkout = async (workoutId?: number) => {
+		try {
+			const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+			if (status !== "granted") {
+				Alert.alert(
+					"Permission Required",
+					"Please grant camera roll permissions to upload a photo."
+				);
+				return;
+			}
+
+			const result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [16, 9],
+				quality: 0.8,
+			});
+
+			if (!result.canceled) {
+				const asset = result.assets[0];
+
+				if (workoutId) {
+					// Update existing workout cover
+					const coverUrl = await uploadWorkoutCover(
+						workoutId,
+						asset.uri,
+						asset.mimeType || "image/jpeg"
+					);
+
+					if (coverUrl) {
+						Alert.alert("Success", "Workout cover updated!");
+					}
+				} else {
+					// Store for new workout
+					setSelectedImage(asset.uri);
+				}
+			}
+		} catch (error) {
+			console.error("Error picking image:", error);
+			Alert.alert("Error", "Failed to pick image. Please try again.");
+		}
+	};
+
+	const handleCreateWorkout = async () => {
+		if (!newWorkoutName.trim()) {
+			Alert.alert("Error", "Please enter a workout name");
+			return;
+		}
+
+		if (!selectedImage) {
+			Alert.alert("Error", "Please select a cover image");
+			return;
+		}
+
+		setCreating(true);
+
+		try {
+			// Create workout with temporary cover
+			const tempWorkout = {
+				user_id: userId,
+				name: newWorkoutName,
+				cover: "temp",
+			};
+
+			await createWorkout(tempWorkout);
+
+			// Get the newly created workout
+			const newWorkout = workouts[0]; // Assuming it's added to the beginning
+
+			if (newWorkout) {
+				// Upload cover
+				await uploadWorkoutCover(
+					newWorkout.id,
+					selectedImage,
+					"image/jpeg"
+				);
+			}
+
+			setShowCreateModal(false);
+			setNewWorkoutName("");
+			setSelectedImage(null);
+			Alert.alert("Success", "Workout created!");
+		} catch (error) {
+			console.error("Error creating workout:", error);
+			Alert.alert("Error", "Failed to create workout. Please try again.");
+		} finally {
+			setCreating(false);
+		}
+	};
+
+	const handleDeleteWorkout = (workout: Workout) => {
+		Alert.alert(
+			"Delete Workout",
+			`Are you sure you want to delete "${workout.name}"?`,
+			[
+				{ text: "Cancel", style: "cancel" },
+				{
+					text: "Delete",
+					style: "destructive",
+					onPress: async () => {
+						await deleteWorkoutDb(workout.id);
+						Alert.alert("Success", "Workout deleted!");
+					},
+				},
+			]
 		);
 	};
 
-	const handleDelete = (id: string) => {
-		setExercises(exercises.filter((ex) => ex.id !== id));
+	const handleWorkoutPress = (workout: Workout) => {
+		router.push(`/workout/${workout.id}`);
 	};
 
-	const handleAddExercise = () => {
-		console.log("Navigate to add exercise screen");
-	};
-
-	const handleEditExercise = (id: string) => {
-		console.log("Navigate to edit exercise:", id);
-	};
-
-	const completedCount = exercises.filter((ex) => ex.completed).length;
-	const totalCalories = exercises.reduce((sum, ex) => sum + ex.calories, 0);
-	const totalDuration = exercises.reduce((sum, ex) => {
-		const mins = parseInt(ex.duration, 10);
-		return sum + mins;
-	}, 0);
+	if (isLoading && workouts.length === 0) {
+		return (
+			<SafeAreaView className="flex-1 bg-background items-center justify-center">
+				<ActivityIndicator size="large" color="#8B5CF6" />
+				<Text className="text-muted-foreground mt-4">Loading workouts...</Text>
+			</SafeAreaView>
+		);
+	}
 
 	return (
 		<SafeAreaView className="flex-1 bg-background">
 			<ScrollView className="flex-1">
 				{/* Header */}
 				<View className="px-6 pt-6 pb-4">
-					<View className="flex-row justify-between items-center mb-2">
-						<View>
-							<Text className="text-3xl font-bold text-foreground mb-1">
-								Today's Workout
-							</Text>
-							<Text className="text-muted-foreground text-base">
-								{new Date().toLocaleDateString("en-US", {
-									weekday: "long",
-									month: "short",
-									day: "numeric",
-								})}
-							</Text>
-						</View>
-						<Pressable
-							onPress={() => setEditMode(!editMode)}
-							className="bg-muted rounded-full p-3"
-						>
-							<Icon
-								as={Edit2}
-								size={20}
-								className={editMode ? "text-primary" : "text-muted-foreground"}
-							/>
-						</Pressable>
-					</View>
+					<Text className="text-3xl font-bold text-foreground mb-2">
+						My Workouts
+					</Text>
+					<Text className="text-muted-foreground text-base">
+						{workouts.length} workout{workouts.length !== 1 ? "s" : ""} available
+					</Text>
 				</View>
 
-				{/* Summary Cards */}
-				<View className="px-6 mb-6">
-					<View className="flex-row gap-2">
-						<View className="flex-1 bg-card border border-border rounded-xl p-3">
-							<Icon as={Target} size={16} className="text-primary mb-1" />
-							<Text className="text-foreground font-bold text-lg">
-								{completedCount}/{exercises.length}
+				{/* Stats Cards */}
+				<View className="px-6 pb-6">
+					<View className="flex-row gap-3">
+						<View className="flex-1 bg-primary/10 rounded-xl p-4">
+							<Icon as={Dumbbell} size={24} className="text-primary mb-2" />
+							<Text className="text-2xl font-bold text-foreground">
+								{workouts.length}
 							</Text>
-							<Text className="text-muted-foreground text-xs">Completed</Text>
+							<Text className="text-muted-foreground text-sm">Workouts</Text>
 						</View>
-						<View className="flex-1 bg-card border border-border rounded-xl p-3">
-							<Icon as={Clock} size={16} className="text-blue-500 mb-1" />
-							<Text className="text-foreground font-bold text-lg">
-								{totalDuration}m
-							</Text>
-							<Text className="text-muted-foreground text-xs">Duration</Text>
+						<View className="flex-1 bg-orange-500/10 rounded-xl p-4">
+							<Icon as={Flame} size={24} className="text-orange-500 mb-2" />
+							<Text className="text-2xl font-bold text-foreground">12</Text>
+							<Text className="text-muted-foreground text-sm">Day Streak</Text>
 						</View>
-						<View className="flex-1 bg-card border border-border rounded-xl p-3">
-							<Icon as={Flame} size={16} className="text-orange-500 mb-1" />
-							<Text className="text-foreground font-bold text-lg">
-								{totalCalories}
-							</Text>
-							<Text className="text-muted-foreground text-xs">Calories</Text>
+						<View className="flex-1 bg-green-500/10 rounded-xl p-4">
+							<Icon as={Calendar} size={24} className="text-green-500 mb-2" />
+							<Text className="text-2xl font-bold text-foreground">48</Text>
+							<Text className="text-muted-foreground text-sm">Completed</Text>
 						</View>
 					</View>
 				</View>
 
-				{/* Exercises List */}
-				<View className="px-6 mb-6">
+				{/* Workouts List */}
+				<View className="px-6 pb-6">
 					<View className="flex-row justify-between items-center mb-4">
-						<Text className="text-foreground font-semibold text-xl">
-							Exercises
+						<Text className="text-xl font-semibold text-foreground">
+							Workouts
 						</Text>
 						<Button
-							size="sm"
-							className="flex-row items-center gap-2"
-							onPress={handleAddExercise}
+							onPress={() => setShowCreateModal(true)}
+							className="h-10 px-4 flex-row items-center gap-2"
 						>
-							<Icon as={Plus} size={16} className="text-primary-foreground" />
-							<Text className="text-sm font-semibold">Add</Text>
+							<Icon as={Plus} size={18} className="text-primary-foreground" />
+							<Text className="text-sm font-semibold">New</Text>
 						</Button>
 					</View>
 
-					<View className="gap-4">
-						{exercises.map((exercise) => (
-							<View key={exercise.id} className="relative">
-								<Pressable
-									onPress={() => !editMode && handleToggleComplete(exercise.id)}
-									className={`bg-card border rounded-2xl overflow-hidden ${
-										exercise.completed
-											? "border-primary opacity-75"
-											: "border-border"
-									}`}
-								>
-									<View className="flex-row">
-										{/* Image */}
-										<View className="relative w-24 h-24">
-											<Image
-												source={{ uri: exercise.image }}
-												className="w-full h-full"
-												resizeMode="cover"
-											/>
-											{exercise.completed && (
-												<View className="absolute inset-0 bg-primary/40 items-center justify-center">
-													<Text className="text-3xl">✓</Text>
-												</View>
-											)}
+					<View className="gap-3">
+						{workouts.map((workout) => (
+							<Pressable
+								key={workout.id}
+								onPress={() => handleWorkoutPress(workout)}
+								onLongPress={() => handleDeleteWorkout(workout)}
+								className="bg-card border border-border rounded-xl overflow-hidden active:opacity-70"
+							>
+								{/* Workout Cover */}
+								<View className="relative h-40 bg-muted">
+									{workout.cover && workout.cover !== "temp" ? (
+										<Image
+											source={{ uri: workout.cover }}
+											className="w-full h-full"
+											resizeMode="cover"
+										/>
+									) : (
+										<View className="w-full h-full items-center justify-center bg-primary/10">
+											<Icon as={Dumbbell} size={48} className="text-primary/40" />
 										</View>
+									)}
+									<Pressable
+										onPress={() => pickImageForWorkout(workout.id)}
+										className="absolute top-2 right-2 bg-background/80 rounded-full p-2"
+									>
+										<Icon as={ImageIcon} size={20} className="text-foreground" />
+									</Pressable>
+								</View>
 
-										{/* Content */}
-										<View className="flex-1 p-3 justify-between">
-											<View>
-												<View className="flex-row items-center justify-between mb-1">
-													<Text className="text-foreground font-bold text-base">
-														{exercise.name}
-													</Text>
-													{!editMode && !exercise.completed && (
-														<Pressable className="bg-primary/10 rounded-full p-1.5">
-															<Icon
-																as={Play}
-																size={14}
-																className="text-primary"
-															/>
-														</Pressable>
-													)}
-												</View>
-												<Text className="text-muted-foreground text-xs mb-2">
-													{exercise.category}
-												</Text>
-											</View>
-											<View className="flex-row items-center gap-3">
-												<Text className="text-muted-foreground text-xs">
-													{exercise.sets} × {exercise.reps} • {exercise.weight}
-												</Text>
-												<Text className="text-primary text-xs font-medium">
-													{exercise.duration}
-												</Text>
-											</View>
-										</View>
-									</View>
-								</Pressable>
-
-								{/* Edit Mode Actions */}
-								{editMode && (
-									<View className="absolute top-2 right-2 flex-row gap-2">
-										<Pressable
-											onPress={() => handleEditExercise(exercise.id)}
-											className="bg-blue-500 rounded-full p-2"
-										>
-											<Icon as={Edit2} size={14} className="text-white" />
-										</Pressable>
-										<Pressable
-											onPress={() => handleDelete(exercise.id)}
-											className="bg-red-500 rounded-full p-2"
-										>
-											<Icon as={Trash2} size={14} className="text-white" />
-										</Pressable>
-									</View>
-								)}
-							</View>
+								{/* Workout Info */}
+								<View className="p-4">
+									<Text className="text-lg font-semibold text-foreground mb-1">
+										{workout.name}
+									</Text>
+									<Text className="text-muted-foreground text-sm">
+										{workout.exercises?.length || 0} exercise
+										{workout.exercises?.length !== 1 ? "s" : ""}
+									</Text>
+								</View>
+							</Pressable>
 						))}
 					</View>
-				</View>
 
-				{/* Start Workout Button */}
-				{!editMode && completedCount < exercises.length && (
-					<View className="px-6 pb-8">
-						<Button className="w-full h-14 flex-row items-center gap-2">
-							<Icon as={Play} className="text-primary-foreground" />
-							<Text className="text-base font-semibold">
-								{completedCount > 0 ? "Continue Workout" : "Start Workout"}
+					{workouts.length === 0 && (
+						<View className="items-center justify-center py-12">
+							<Icon as={Dumbbell} size={64} className="text-muted-foreground/40 mb-4" />
+							<Text className="text-muted-foreground text-center mb-2">
+								No workouts yet
 							</Text>
-						</Button>
-					</View>
-				)}
+							<Text className="text-muted-foreground/60 text-center text-sm">
+								Create your first workout to get started
+							</Text>
+						</View>
+					)}
+				</View>
 			</ScrollView>
+
+			{/* Create Workout Modal */}
+			{showCreateModal && (
+				<View className="absolute inset-0 bg-background/95 items-center justify-center px-6">
+					<View className="bg-card border border-border rounded-2xl p-6 w-full max-w-md">
+						<Text className="text-2xl font-bold text-foreground mb-4">
+							Create Workout
+						</Text>
+
+						<TextInput
+							placeholder="Workout name"
+							value={newWorkoutName}
+							onChangeText={setNewWorkoutName}
+							className="bg-background border border-border rounded-xl px-4 py-3 text-foreground mb-4"
+							placeholderTextColor="#888"
+						/>
+
+						<Pressable
+							onPress={() => pickImageForWorkout()}
+							className="bg-muted border-2 border-dashed border-border rounded-xl h-40 items-center justify-center mb-4"
+						>
+							{selectedImage ? (
+								<Image
+									source={{ uri: selectedImage }}
+									className="w-full h-full rounded-xl"
+									resizeMode="cover"
+								/>
+							) : (
+								<View className="items-center">
+									<Icon as={ImageIcon} size={48} className="text-muted-foreground mb-2" />
+									<Text className="text-muted-foreground">Tap to select cover</Text>
+								</View>
+							)}
+						</Pressable>
+
+						<View className="flex-row gap-3">
+							<Button
+								variant="outline"
+								onPress={() => {
+									setShowCreateModal(false);
+									setNewWorkoutName("");
+									setSelectedImage(null);
+								}}
+								className="flex-1"
+								disabled={creating}
+							>
+								<Text>Cancel</Text>
+							</Button>
+							<Button
+								onPress={handleCreateWorkout}
+								className="flex-1"
+								disabled={creating}
+							>
+								{creating ? (
+									<ActivityIndicator color="#fff" />
+								) : (
+									<Text className="font-semibold">Create</Text>
+								)}
+							</Button>
+						</View>
+					</View>
+				</View>
+			)}
 		</SafeAreaView>
 	);
 }
