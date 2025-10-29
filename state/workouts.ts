@@ -28,7 +28,6 @@ type WorkoutsState = {
   isLoading: boolean;
   error: string | null;
 
-  // Supabase Workout actions
   fetchWorkouts: (userId: string) => Promise<void>;
   fetchWorkoutById: (workoutId: number) => Promise<void>;
   createWorkout: (workout: Omit<Workout, "id" | "created_at">) => Promise<void>;
@@ -37,7 +36,6 @@ type WorkoutsState = {
   uploadWorkoutCover: (workoutId: number, fileUri: string, fileType: string) => Promise<string | null>;
   deleteWorkoutCover: (coverUrl: string) => Promise<void>;
 
-  // Supabase Exercise actions
   fetchExercises: (workoutId: number) => Promise<void>;
   createExercise: (exercise: Omit<Exercise, "id" | "created_at">) => Promise<void>;
   updateExerciseDb: (exerciseId: number, updates: Partial<Omit<Exercise, "id" | "created_at">>) => Promise<void>;
@@ -45,7 +43,6 @@ type WorkoutsState = {
   uploadExerciseCover: (exerciseId: number, fileUri: string, fileType: string) => Promise<string | null>;
   deleteExerciseCover: (coverUrl: string) => Promise<void>;
 
-  // Local state actions
   setWorkouts: (workouts: Workout[]) => void;
   addWorkout: (workout: Workout) => void;
   updateWorkout: (id: number, updates: Partial<Workout>) => void;
@@ -69,7 +66,6 @@ export const useWorkoutsStore = create(
       isLoading: false,
       error: null,
 
-      // Supabase Workout actions
       fetchWorkouts: async (userId: string) => {
         set({ isLoading: true, error: null });
         try {
@@ -183,7 +179,6 @@ export const useWorkoutsStore = create(
       uploadWorkoutCover: async (workoutId: number, fileUri: string, fileType: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Use new File API to read file from device
           const file = new File(fileUri);
           const base64 = await file.base64();
 
@@ -232,7 +227,6 @@ export const useWorkoutsStore = create(
         }
       },
 
-      // Supabase Exercise actions
       fetchExercises: async (workoutId: number) => {
         set({ isLoading: true, error: null });
         try {
@@ -337,7 +331,6 @@ export const useWorkoutsStore = create(
       uploadExerciseCover: async (exerciseId: number, fileUri: string, fileType: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Use new File API to read file from device
           const file = new File(fileUri);
           const base64 = await file.base64();
 
@@ -386,7 +379,6 @@ export const useWorkoutsStore = create(
         }
       },
 
-      // Local state actions
       setWorkouts: (workouts) => {
         set({ workouts, error: null });
       },

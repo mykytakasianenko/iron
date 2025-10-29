@@ -19,7 +19,6 @@ type ProfileState = {
   isLoading: boolean;
   error: string | null;
 
-  // Supabase actions
   fetchProfile: (userId: string) => Promise<void>;
   createProfile: (profile: Omit<Profile, "updated_at">) => Promise<void>;
   updateProfileDb: (userId: string, updates: Partial<Omit<Profile, "id">>) => Promise<void>;
@@ -27,7 +26,6 @@ type ProfileState = {
   uploadAvatar: (userId: string, fileUri: string, fileType: string) => Promise<string | null>;
   deleteAvatar: (avatarUrl: string) => Promise<void>;
 
-  // Local state actions
   setProfile: (profile: Profile) => void;
   updateProfile: (updates: Partial<Profile>) => void;
   clearProfile: () => void;
@@ -113,7 +111,6 @@ export const useProfileStore = create(
       uploadAvatar: async (userId: string, fileUri: string, fileType: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Use new File API to read file from device
           const file = new File(fileUri);
           const base64 = await file.base64();
 
@@ -121,7 +118,6 @@ export const useProfileStore = create(
           const fileName = `${userId}-${Date.now()}.${fileExt}`;
           const filePath = `avatars/${fileName}`;
 
-          // Upload to Supabase Storage using base64
           const { error: uploadError } = await supabase.storage
             .from('profiles')
             .upload(filePath, decode(base64), {
@@ -131,12 +127,10 @@ export const useProfileStore = create(
 
           if (uploadError) throw uploadError;
 
-          // Get public URL
           const { data: urlData } = supabase.storage
             .from('profiles')
             .getPublicUrl(filePath);
 
-          // Update profile with new avatar URL
           await get().updateProfileDb(userId, { avatar_url: urlData.publicUrl });
 
           set({ isLoading: false });
@@ -150,7 +144,6 @@ export const useProfileStore = create(
       deleteAvatar: async (avatarUrl: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Extract file path from URL
           const urlParts = avatarUrl.split('/');
           const filePath = `avatars/${urlParts[urlParts.length - 1]}`;
 

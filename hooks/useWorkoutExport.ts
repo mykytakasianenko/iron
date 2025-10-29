@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase'; // Your supabase client
+import { supabase } from '@/lib/supabase';
 
 export const useWorkoutExport = () => {
   const [isExporting, setIsExporting] = useState(false);
@@ -10,14 +10,12 @@ export const useWorkoutExport = () => {
       setIsExporting(true);
       setExportError(null);
 
-      // Get current session
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Not authenticated');
       }
 
-      // Call the edge function
       const { data, error } = await supabase.functions.invoke('export-workout', {
         body: workoutId ? { workout_id: workoutId } : {},
         headers: {

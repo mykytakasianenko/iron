@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert, TouchableOpacity, Text, ActivityIndicator, Linking } from 'react-native';
-import { useWorkoutExport } from '../hooks/useWorkoutExport';
+import { useWorkoutExport } from '@/hooks/useWorkoutExport';
 
 interface ExportWorkoutsButtonProps {
-  workoutId?: number; // Optional: export single workout
+  workoutId?: number;
   style?: any;
 }
 
