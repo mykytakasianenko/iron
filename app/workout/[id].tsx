@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useWorkoutsStore, Exercise } from "@/state/workouts";
+import { ExportWorkoutsButton } from "@/components/ExportWorkoutsButton";
 
 export default function WorkoutDetailScreen() {
   const router = useRouter();
@@ -226,6 +227,7 @@ export default function WorkoutDetailScreen() {
                 <Pressable onPress={() => setEditingWorkout(true)}>
                   <Icon as={Edit} size={20} className="text-muted-foreground" />
                 </Pressable>
+                <ExportWorkoutsButton workoutId={workoutId} />
               </View>
             )}
           </View>

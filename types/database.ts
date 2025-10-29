@@ -34,6 +34,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_reports: {
+        Row: {
+          created_at: string | null
+          exercises_created: number
+          id: string
+          report_date: string
+          workouts_created: number
+        }
+        Insert: {
+          created_at?: string | null
+          exercises_created?: number
+          id?: string
+          report_date: string
+          workouts_created?: number
+        }
+        Update: {
+          created_at?: string | null
+          exercises_created?: number
+          id?: string
+          report_date?: string
+          workouts_created?: number
+        }
+        Relationships: []
+      }
       exercises: {
         Row: {
           cover: string
@@ -65,6 +89,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      messages: {
+        Row: {
+          created_at: string | null
+          id: number
+          message: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          message: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          message?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -130,7 +178,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_old_messages: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

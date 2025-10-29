@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { BarChart, Home, Settings } from "lucide-react-native";
+import { BarChart, Home, MessageCircleIcon, Settings } from "lucide-react-native";
 
 export default function Layout() {
 	return (
@@ -24,6 +24,16 @@ export default function Layout() {
 					tabBarLabel: "Insights",
 					tabBarIcon: ({ color, size }) => (
 						<BarChart color={color} size={size} />
+					),
+				}}
+			/>
+
+			<Tabs.Screen
+				name="chat"
+				options={{
+					tabBarLabel: "Chat",
+					tabBarIcon: ({ color, size }) => (
+						<MessageCircleIcon color={color} size={size} />
 					),
 				}}
 			/>
