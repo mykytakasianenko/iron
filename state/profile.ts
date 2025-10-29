@@ -3,7 +3,7 @@ import { File } from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { supabase } from "@/lib/supabase"; // Import your supabase client
+import { supabase } from "@/lib/supabase";
 
 export type Profile = {
   id: string;
